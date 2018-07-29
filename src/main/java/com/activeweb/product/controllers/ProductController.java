@@ -1,4 +1,4 @@
-package com.activeweb.product;
+package com.activeweb.product.controllers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -7,18 +7,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activeweb.product.beans.Details;
+import com.activeweb.product.beans.LoanApplication;
 import com.activeweb.product.beans.Product;
+import com.activeweb.product.service.ApplicationDataPublishingService;
 
 @RestController
 public class ProductController {
 
+	@Autowired
+	private ApplicationDataPublishingService publishingService;
+	
 	@RequestMapping(value = "/products/{appName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Product> getAllProducts(@PathVariable String appName) {
 
@@ -53,6 +60,12 @@ public class ProductController {
 
 		return products;
 
+	}
+	
+	@GetMapping("/processLoanClosure/{applicationId}")
+	public void processLoanClosure(@PathVariable("applicationId") String applicationId) {
+		//Invoke DB and get application details...
+		publishingService.publish(new LoanApplication("1234","Mark","Taylor"));
 	}
 
 }
